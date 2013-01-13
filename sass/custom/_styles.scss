@@ -1,2 +1,22 @@
 // This File is imported last, and will override other styles in the cascade
 // Add styles here to make changes without digging in too much
+
+
+
+html { background: #262C33 url("/images/line-tile-black.png"); }
+
+body { font-size: 1em; }
+
+body > div { background-image: none; }
+
+body > div > div { background-image: none; }
+
+
+/* ----- header ----- */
+
+
+body > header{
+  background: none;
+}
+
+
