@@ -10,7 +10,7 @@ categories:
 Monit: [http://mmonit.com/monit/](http://mmonit.com/monit/)   
 Wiki: [http://mmonit.com/monit/documentation/monit.html](http://mmonit.com/monit/documentation/monit.html)   
 Man:  [http://linux.die.net/man/1/monit](http://linux.die.net/man/1/monit)  
-
+Original: [http://blog.hostonnet.com/installing-monit-on-linux-centos-server](http://blog.hostonnet.com/installing-monit-on-linux-centos-server)
 ###Installation
 Other packes I needed for my box
     yum install pam-devel 
@@ -18,6 +18,7 @@ Other packes I needed for my box
  
 
 Get and install Monit
+    cd /usr/local/src
     wget http://mmonit.com/monit/dist/monit-5.5.tar.gz
     tar -zxvf monit-5.5.tar.gz
     cd monit-5.5
@@ -38,10 +39,10 @@ Create the service files (this will repeat for every service you monitor)
     #Now Inside the apache file:
     check process httpd with pidfile /var/run/httpd/httpd.pid
     group apache
-    start program = “/etc/init.d/httpd start”
-    stop program = “/etc/init.d/httpd stop”
+    start program = "/etc/init.d/httpd start"
+    stop program = "/etc/init.d/httpd stop"
     if failed host 127.0.0.1 port 80 protocol http
-     and request “/index.html”
+     and request "/index.html"
     then restart
     if 5 restarts within 5 cycles then timeout
      
@@ -51,7 +52,7 @@ Now setup the init.d file
     cp contrib/rc.monit /etc/init.d/monit
     chmod 755 /etc/init.d/monit
 
-You may need to fix the line inside the above file thats pointing at `/usr/bin/monit` to `/usr/local/bin/monit` or wheverer it is on your system.
+You may need to fix the line inside the above file thats pointing at `/usr/bin/monit` to `/usr/local/bin/monit`.
 After this is in place you should have the `service monit restart` command available.
 
 
