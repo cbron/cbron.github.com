@@ -10,7 +10,6 @@ categories:
 Monit: [http://mmonit.com/monit/](http://mmonit.com/monit/)   
 Wiki: [http://mmonit.com/monit/documentation/monit.html](http://mmonit.com/monit/documentation/monit.html)   
 Man:  [http://linux.die.net/man/1/monit](http://linux.die.net/man/1/monit)  
-Original: [http://blog.hostonnet.com/installing-monit-on-linux-centos-server](http://blog.hostonnet.com/installing-monit-on-linux-centos-server)
 ###Installation
 Other packes I needed for my box
     yum install pam-devel 
