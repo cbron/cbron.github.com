@@ -28,7 +28,9 @@ Get and install Monit
  
 Setup monitrc
     cp monitrc /etc/
-    vi /etc/monitrc  # At the end of monitrc add or uncomment: include /etc/monit.d/*
+    vi /etc/monitrc
+      # At the end of monitrc add or uncomment: include /etc/monit.d/*
+      # Also set the 'set daemon' line at the beginning to your preferred interval.
     mkdir /etc/monit.d
 
 Create the service files (this will repeat for every service you monitor)
@@ -36,17 +38,24 @@ Create the service files (this will repeat for every service you monitor)
     vi /etc/monit.d/apache
 
     #Now Inside the apache file:
-    check process httpd with pidfile /var/run/httpd/httpd.pid
-    group apache
-    start program = "/etc/init.d/httpd start"
+
+    check process httpd with pidfile /var/run/httpd.pid
+    start program = "/etc/init.d/httpd start" with timeout 20 seconds
     stop program = "/etc/init.d/httpd stop"
     if failed host 127.0.0.1 port 80 protocol http
      and request "/index.html"
     then restart
     if 5 restarts within 5 cycles then timeout
      
+    check system localhost
+    if memory usage > 85% then alert
+    if cpu usage (user) > 80% for 3 cycles then alert
+    if cpu usage (system) > 80% for 3 cycles then alert
+     
 To see more services, [check this out.](http://mmonit.com/wiki/Monit/ConfigurationExamples)
  
+You can see in the above code we used alert. To setup alerts go into the /etc/monitrc file and do 2 things. First change the `set mailserver` line to localhost (or your mailserver). Then change the `set alert` line to include your email. Thats it. 
+
 Now setup the init.d file
     cp contrib/rc.monit /etc/init.d/monit
     chmod 755 /etc/init.d/monit
@@ -56,7 +65,7 @@ After this is in place you should have the `service monit restart` command avail
 
 
 To start Monit at boot, edit `vim /etc/rc.d/rc.local` and add in the next line
-    /usr/local/bin/monit -d 60 -v -c /etc/monitrc -p /var/run/monit.pid -l /var/log/monit.log
+    /usr/local/bin/monit -c /etc/monitrc -p /var/run/monit.pid -l /var/log/monit.log
 
 Go ahead and run the above line in the console to see if monit works. If so, a call to `service httpd stop` should cause monit to restart apache.
 
