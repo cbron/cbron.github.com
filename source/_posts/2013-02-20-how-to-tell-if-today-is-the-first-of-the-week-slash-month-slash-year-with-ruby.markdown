@@ -13,11 +13,11 @@ I had a project recently where a cron would fire early in the morning and genera
 Time.now.hour == 0
 
 #Beginnning of the week
-Date.today.beginning_of_week == Date.today
+Time.now.beginning_of_week == Time.now.beginning_of_hour
 
 #First day of the month 
-Date.today.beginning_of_month == Date.today or Time.now.day == 1
+Time.now.day == 1 && Time.now.hour == 0
 
 #First day of the year
-Date.today.beginning_of_year == Date.today
+Time.now.beginning_of_year == Time.now.beginning_of_hour
 {% endcodeblock %}
