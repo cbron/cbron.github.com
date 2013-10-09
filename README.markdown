@@ -1,3 +1,18 @@
+# How to
+
+
+rake new_post[""]
+rake preview
+rake watch
+
+rake generate
+rake deploy
+
+git add .
+git commit -a -m 'message'
+git push origin source
+
+
 ## What is Octopress?
 
 Octopress is [Jekyll](https://github.com/mojombo/jekyll) blogging at its finest.
