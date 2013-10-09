@@ -1,16 +1,20 @@
 # How to
 
+Create
+ * rake new_post[""]
+ * rake preview
+ * rake watch
 
-rake new_post[""]
-rake preview
-rake watch
+Deploy
 
-rake generate
-rake deploy
+ * rake generate
+ * rake deploy
 
-git add .
-git commit -a -m 'message'
-git push origin source
+Update code
+
+ * git add .
+ * git commit -a -m 'message'
+ * git push origin source
 
 
 ## What is Octopress?
