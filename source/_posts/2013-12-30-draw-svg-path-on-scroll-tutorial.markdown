@@ -6,7 +6,7 @@ comments: true
 categories: 
 ---
 
-The "[Russia Left Behind](http://www.nytimes.com/newsgraphics/2013/10/13/russia/?ref=global-home)" article a few months ago and fell in love with it, especially the two maps. 
+The "[Russia Left Behind](http://www.nytimes.com/newsgraphics/2013/10/13/russia/?ref=global-home)" article caught my attention a few months ago and I fell in love with it, especially the two maps. 
 I will quickly go over one way to draw a line on user scroll, although this way is different from the way the New York Times did it. From the looks of it they used [TopoJSON](https://github.com/mbostock/topojson).
 
 [Demo](http://www.calebbron.com/stuff/svg.html)
