@@ -22,7 +22,9 @@ I put this in /root/ so that non-sudo users can't see the OAUTH_KEY, but you can
 The way its configured, it won't merge INTO master, staging, release, or development. Although it could go from development into my-feature-1 or any other branch. 
 
 Make sure you change the two spots where it has :owner to your username
+
 (Disclaimer: I'm still a Python newbie, so there could be bad practices in here.)
+
 {% codeblock lang:python auto_merge_github.py %}
 #!/usr/bin/env python
 import json
