@@ -21,6 +21,7 @@ I put this in /root/ so that non-sudo users can't see the OAUTH_KEY, but you can
 
 The way its configured, it won't merge INTO master, staging, release, or development. Although it could go from development into my-feature-1 or any other branch. 
 
+Make sure you change the two spots where it has :owner to your username
 (Disclaimer: I'm still a Python newbie, so there could be bad practices in here.)
 {% codeblock lang:python auto_merge_github.py %}
 #!/usr/bin/env python
@@ -45,7 +46,7 @@ def print_message(merging):
 
 # Merge the actual pull request
 def merge_pr():
-  r = requests.put("https://api.github.com/repos/phx-it-web/%s/pulls/%d/merge"%(repo,pr_id,), 
+  r = requests.put("https://api.github.com/repos/:owner/%s/pulls/%d/merge"%(repo,pr_id,), 
     data=json.dumps({"commit_message": "Auto_Merge"}), 
     auth=('token', OAUTH_KEY))
   if "merged" in r.json() and r.json()["merged"]==True:
@@ -59,7 +60,7 @@ def merge_pr():
 print datetime.datetime.now()
 
 for repo in repos:
-  r = requests.get('https://api.github.com/repos/phx-it-web/%s/pulls'%repo, auth=('token', OAUTH_KEY))
+  r = requests.get('https://api.github.com/repos/:owner/%s/pulls'%repo, auth=('token', OAUTH_KEY))
   data = r.json()
 
   for i in data:
