@@ -4,7 +4,7 @@
   <title><![CDATA[Cable Codes]]></title>
   <link href="http://cbron.github.com/atom.xml" rel="self"/>
   <link href="http://cbron.github.com/"/>
-  <updated>2014-07-03T10:07:59-07:00</updated>
+  <updated>2014-07-03T10:16:15-07:00</updated>
   <id>http://cbron.github.com/</id>
   <author>
     <name><![CDATA[cbron]]></name>
@@ -12,60 +12,6 @@
   </author>
   <generator uri="http://octopress.org/">Octopress</generator>
 
-  
-  <entry>
-    <title type="html"><![CDATA[Versioning a Flask-Restful api]]></title>
-    <link href="http://cbron.github.com/blog/2014/07/03/versioning-a-flask-restful-api+2/"/>
-    <updated>2014-07-03T09:04:00-07:00</updated>
-    <id>http://cbron.github.com/blog/2014/07/03/versioning-a-flask-restful-api 2</id>
-    <content type="html"><![CDATA[<p><em>Disclaimer</em>: This is not necessarily the <em>best</em> way to version an api through flask-restful, it is simply <em>one</em> way.</p>
-
-<p>There doesn&#8217;t seem to be a standard way to do this in flask-restful. I would recommend watching this video to see how its done in ruby on rails, as you can almost re-create this in python: <a href="http://railscasts.com/episodes/350-rest-api-versioning">http://railscasts.com/episodes/350-rest-api-versioning</a></p>
-
-<p>Project Structure</p>
-
-<pre><code>repo
-  |--app
-    __init__.py
-    urls.py
-    |--common
-        authentication.py
-        utils.py
-    |--models
-        user.py
-        article.py
-    |--views
-        |--v1
-           users.py
-           articles.py
-        |--v2
-           users.py
-</code></pre>
-
-<p>urls.py</p>
-
-<pre><code>#V1
-
-from views.v1.articles import Articles
-from views.v1.users import UsersV1
-
-api.add_resource(Articles, '/&lt;string:version&gt;/articles')
-api.add_resource(UsersV1, '/v1/users')
-
-
-# V2
-
-from views.v2.users import UsersV2
-api.add_resource(UsersV2, '/v2/users')
-</code></pre>
-
-<p>The benefit you get from doing it this way is that now you can hit <code>/v5/articles</code> and it will still go to the original articles.py view file. This means you don&#8217;t have to copy over articles.py to the v2 folder once you create it, you only have to create files for things that will change.</p>
-
-<p>The downside is that you may have a <code>/v2</code> folder with updates to users, a <code>/v3</code> folder with updates to just articles and a <code>/v4</code> folder with just updates to a yet-to-be-created view. But thats what command+T is for in Sublime :) You&#8217;ll also have to rename your classes from <code>Users</code> to <code>UsersV1/UsersV2</code> everytime you switch from a single file to a versioned file.</p>
-
-<p><em>P.S. For brevity I left most of the files out of the project structure, you will still need a <code>__init__.py</code> file in your views/, v1/, v2/, models/, etc.. folders</em></p>
-]]></content>
-  </entry>
   
   <entry>
     <title type="html"><![CDATA[Versioning a Flask-Restful api]]></title>
