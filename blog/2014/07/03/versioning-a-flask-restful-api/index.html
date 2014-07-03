@@ -1,0 +1,339 @@
+
+<!DOCTYPE html>
+<!--[if IEMobile 7 ]><html class="no-js iem7"><![endif]-->
+<!--[if lt IE 9]><html class="no-js lte-ie8"><![endif]-->
+<!--[if (gt IE 8)|(gt IEMobile 7)|!(IEMobile)|!(IE)]><!--><html class="no-js" lang="en"><!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  <title>Versioning a Flask-Restful api - Cable Codes</title>
+  <meta name="author" content="cbron">
+
+  
+  <meta name="description" content="Disclaimer: This is not necessarily the best way to version an api through flask-restful, it is simply one way. There doesn&#8217;t seem to be a &hellip;">
+  
+
+  <!-- http://t.co/dKP3o1e -->
+  <meta name="HandheldFriendly" content="True">
+  <meta name="MobileOptimized" content="320">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+
+  
+  <link rel="canonical" href="http://cbron.github.com/blog/2014/07/03/versioning-a-flask-restful-api/">
+  <link href="/favicon.png" rel="icon">
+  <link href="/stylesheets/screen.css" media="screen, projection" rel="stylesheet" type="text/css">
+  <script src="/javascripts/modernizr-2.0.js"></script>
+  <script src="/javascripts/ender.js"></script>
+  <script src="/javascripts/octopress.js" type="text/javascript"></script>
+  <link href="/atom.xml" rel="alternate" title="Cable Codes" type="application/atom+xml">
+  <!--Fonts from Google"s Web font directory at http://google.com/webfonts -->
+<link href="http://fonts.googleapis.com/css?family=PT+Serif:regular,italic,bold,bolditalic" rel="stylesheet" type="text/css">
+<link href="http://fonts.googleapis.com/css?family=PT+Sans:regular,italic,bold,bolditalic" rel="stylesheet" type="text/css">
+
+  
+  <script type="text/javascript">
+    var _gaq = _gaq || [];
+    _gaq.push(['_setAccount', 'UA-43046341-1']);
+    _gaq.push(['_trackPageview']);
+
+    (function() {
+      var ga = document.createElement('script'); ga.type = 'text/javascript'; ga.async = true;
+      ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
+      var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
+    })();
+  </script>
+
+
+</head>
+
+<body   >
+  <header role="banner"><hgroup>
+  <h1><a href="/">Cable Codes</a></h1>
+  
+</hgroup>
+
+</header>
+  <nav role="navigation"><ul class="subscription" data-subscription="rss">
+  <li><a href="/atom.xml" rel="subscribe-rss" title="subscribe via RSS">RSS</a></li>
+  
+</ul>
+  
+<form action="http://google.com/search" method="get">
+  <fieldset role="search">
+    <input type="hidden" name="q" value="site:cbron.github.com" />
+    <input class="search" type="text" name="q" results="0" placeholder="Search"/>
+  </fieldset>
+</form>
+  
+<ul class="main-navigation">
+  <li><a href="/">Blog</a></li>
+  <li><a href="/blog/archives">Archives</a></li>
+</ul>
+
+</nav>
+  <div id="main">
+    <div id="content">
+      <div>
+<article class="hentry" role="article">
+  
+  <header>
+    
+      <h1 class="entry-title">Versioning a Flask-Restful Api</h1>
+    
+    
+      <p class="meta">
+        
+
+
+
+
+
+
+
+
+  
+
+
+<time datetime="2014-07-03T09:04:00-07:00" pubdate data-updated="true">Jul 3<span>rd</span>, 2014</time>
+        
+      </p>
+    
+  </header>
+
+
+<div class="entry-content"><p><em>Disclaimer</em>: This is not necessarily the <em>best</em> way to version an api through flask-restful, it is simply <em>one</em> way.</p>
+
+<p>There doesn&#8217;t seem to be a standard way to do this in flask-restful. I would recommend watching this video to see how its done in ruby on rails, as you can almost re-create this in python: <a href="http://railscasts.com/episodes/350-rest-api-versioning">http://railscasts.com/episodes/350-rest-api-versioning</a></p>
+
+<p>Project Structure</p>
+
+<pre><code>repo
+  |--app
+    __init__.py
+    urls.py
+    |--common
+        authentication.py
+        utils.py
+    |--models
+        user.py
+        article.py
+    |--views
+        |--v1
+           users.py
+           articles.py
+        |--v2
+           users.py
+</code></pre>
+
+<p>urls.py</p>
+
+<pre><code>#V1
+
+from views.v1.articles import Articles
+from views.v1.users import UsersV1
+
+api.add_resource(Articles, '/&lt;string:version&gt;/articles')
+api.add_resource(UsersV1, '/v1/users')
+
+
+# V2
+
+from views.v2.users import UsersV2
+api.add_resource(UsersV2, '/v2/users')
+</code></pre>
+
+<p>The benefit you get from doing it this way is that now you can hit <code>/v5/articles</code> and it will still go to the original articles.py view file. This means you don&#8217;t have to copy over articles.py to the v2 folder once you create it, you only have to create files for things that will change.</p>
+
+<p>The downside is that you may have a <code>/v2</code> folder with updates to users, a <code>/v3</code> folder with updates to just articles and a <code>/v4</code> folder with just updates to a yet-to-be-created view. But thats what command+T is for in Sublime :) You&#8217;ll also have to rename your classes from <code>Users</code> to <code>UsersV1/UsersV2</code> everytime you switch from a single file to a versioned file.</p>
+
+<p><em>P.S. For brevity I left most of the files out of the project structure, you will still need a <code>__init__.py</code> file in your views/, v1/, v2/, models/, etc.. folders</em></p>
+</div>
+
+
+  <footer>
+    <p class="meta">
+      
+  
+
+<span class="byline author vcard">Posted by <span class="fn">cbron</span></span>
+
+      
+
+
+
+
+
+
+
+
+  
+
+
+<time datetime="2014-07-03T09:04:00-07:00" pubdate data-updated="true">Jul 3<span>rd</span>, 2014</time>
+      
+
+
+    </p>
+    
+      <div class="sharing">
+  
+  <a href="http://twitter.com/share" class="twitter-share-button" data-url="http://cbron.github.com/blog/2014/07/03/versioning-a-flask-restful-api/" data-via="calebbron" data-counturl="http://cbron.github.com/blog/2014/07/03/versioning-a-flask-restful-api/" >Tweet</a>
+  
+  
+  
+</div>
+
+    
+    <p class="meta">
+      
+        <a class="basic-alignment left" href="/blog/2014/03/25/auto-merge-pull-requests-on-github-except-the-master-branch/" title="Previous Post: auto merge pull requests on github except the master branch">&laquo; auto merge pull requests on github except the master branch</a>
+      
+      
+        <a class="basic-alignment right" href="/blog/2014/07/03/versioning-a-flask-restful-api+2/" title="Next Post: Versioning a Flask-Restful api">Versioning a Flask-Restful api &raquo;</a>
+      
+    </p>
+  </footer>
+</article>
+
+  <section>
+    <h1>Comments</h1>
+    <div id="disqus_thread" aria-live="polite"><noscript>Please enable JavaScript to view the <a href="http://disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
+</div>
+  </section>
+
+</div>
+
+<aside class="sidebar">
+  
+    <section>
+  <h1>Recent Posts</h1>
+  <ul id="recent_posts">
+    
+      <li class="post">
+        <a href="/blog/2014/07/03/versioning-a-flask-restful-api+2/">Versioning a Flask-Restful api</a>
+      </li>
+    
+      <li class="post">
+        <a href="/blog/2014/07/03/versioning-a-flask-restful-api/">Versioning a Flask-Restful api</a>
+      </li>
+    
+      <li class="post">
+        <a href="/blog/2014/03/25/auto-merge-pull-requests-on-github-except-the-master-branch/">auto merge pull requests on github except the master branch</a>
+      </li>
+    
+      <li class="post">
+        <a href="/blog/2013/12/30/draw-svg-path-on-scroll-tutorial/">draw svg path on scroll tutorial</a>
+      </li>
+    
+      <li class="post">
+        <a href="/blog/2013/10/09/reload-page-and-add-param-on-checkbox-click-with-rails/">Reload page and add param on checkbox click with Rails</a>
+      </li>
+    
+  </ul>
+</section>
+<section>
+  <h1>Sticky</h1>
+  <p><a href="https://www.evernote.com/shard/s182/sh/8b392a93-e5bf-4160-959d-f18f8bf22bee/a9d542dc20090b3cfd74d62fe4b1ae6d" target="_blank">Linux Cheatsheet</a></p>
+</section>
+
+<section>
+  <h1>GitHub Repos</h1>
+  <ul id="gh_repos">
+    <li class="loading">Status updating...</li>
+  </ul>
+  
+  <a href="https://github.com/cbron">@cbron</a> on GitHub
+  
+  <script type="text/javascript">
+    $.domReady(function(){
+        if (!window.jXHR){
+            var jxhr = document.createElement('script');
+            jxhr.type = 'text/javascript';
+            jxhr.src = '/javascripts/libs/jXHR.js';
+            var s = document.getElementsByTagName('script')[0];
+            s.parentNode.insertBefore(jxhr, s);
+        }
+
+        github.showRepos({
+            user: 'cbron',
+            count: 0,
+            skip_forks: true,
+            target: '#gh_repos'
+        });
+    });
+  </script>
+  <script src="/javascripts/github.js" type="text/javascript"> </script>
+</section>
+
+
+<section>
+  <h1>Latest Tweets</h1>
+  <ul id="tweets">
+    <li class="loading">Status updating...</li>
+  </ul>
+  <script type="text/javascript">
+    $.domReady(function(){
+      getTwitterFeed("calebbron", 4, false);
+    });
+  </script>
+  <script src="/javascripts/twitter.js" type="text/javascript"> </script>
+  
+    <a href="http://twitter.com/calebbron" class="twitter-follow-button" data-show-count="false">Follow @calebbron</a>
+  
+</section>
+
+
+
+
+
+  
+</aside>
+
+
+    </div>
+  </div>
+  <footer role="contentinfo"><p>
+  Copyright &copy; 2014 - cbron -
+  <span class="credit">Powered by <a href="http://octopress.org">Octopress</a></span>
+</p>
+
+</footer>
+  
+
+<script type="text/javascript">
+      var disqus_shortname = 'cablecodes';
+      
+        
+        // var disqus_developer = 1;
+        var disqus_identifier = 'http://cbron.github.com/blog/2014/07/03/versioning-a-flask-restful-api/';
+        var disqus_url = 'http://cbron.github.com/blog/2014/07/03/versioning-a-flask-restful-api/';
+        var disqus_script = 'embed.js';
+      
+    (function () {
+      var dsq = document.createElement('script'); dsq.type = 'text/javascript'; dsq.async = true;
+      dsq.src = 'http://' + disqus_shortname + '.disqus.com/' + disqus_script;
+      (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+    }());
+</script>
+
+
+
+
+
+
+
+  <script type="text/javascript">
+    (function(){
+      var twitterWidgets = document.createElement('script');
+      twitterWidgets.type = 'text/javascript';
+      twitterWidgets.async = true;
+      twitterWidgets.src = 'http://platform.twitter.com/widgets.js';
+      document.getElementsByTagName('head')[0].appendChild(twitterWidgets);
+    })();
+  </script>
+
+
+
+
+
+</body>
+</html>

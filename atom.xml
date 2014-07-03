@@ -1,109 +1,24 @@
+<?xml version="1.0" encoding="utf-8"?>
+<feed xmlns="http://www.w3.org/2005/Atom">
 
-<!DOCTYPE html>
-<!--[if IEMobile 7 ]><html class="no-js iem7"><![endif]-->
-<!--[if lt IE 9]><html class="no-js lte-ie8"><![endif]-->
-<!--[if (gt IE 8)|(gt IEMobile 7)|!(IEMobile)|!(IE)]><!--><html class="no-js" lang="en"><!--<![endif]-->
-<head>
-  <meta charset="utf-8">
-  <title>Cable Codes</title>
-  <meta name="author" content="cbron">
-
-  
-  <meta name="description" content="Disclaimer: This is not necessarily the best way to version an api through flask-restful, it is simply one way. There doesn&#8217;t seem to be a &hellip;">
-  
-
-  <!-- http://t.co/dKP3o1e -->
-  <meta name="HandheldFriendly" content="True">
-  <meta name="MobileOptimized" content="320">
-  <meta name="viewport" content="width=device-width, initial-scale=1">
-
-  
-  <link rel="canonical" href="http://cbron.github.com/">
-  <link href="/favicon.png" rel="icon">
-  <link href="/stylesheets/screen.css" media="screen, projection" rel="stylesheet" type="text/css">
-  <script src="/javascripts/modernizr-2.0.js"></script>
-  <script src="/javascripts/ender.js"></script>
-  <script src="/javascripts/octopress.js" type="text/javascript"></script>
-  <link href="/atom.xml" rel="alternate" title="Cable Codes" type="application/atom+xml">
-  <!--Fonts from Google"s Web font directory at http://google.com/webfonts -->
-<link href="http://fonts.googleapis.com/css?family=PT+Serif:regular,italic,bold,bolditalic" rel="stylesheet" type="text/css">
-<link href="http://fonts.googleapis.com/css?family=PT+Sans:regular,italic,bold,bolditalic" rel="stylesheet" type="text/css">
-
-  
-  <script type="text/javascript">
-    var _gaq = _gaq || [];
-    _gaq.push(['_setAccount', 'UA-43046341-1']);
-    _gaq.push(['_trackPageview']);
-
-    (function() {
-      var ga = document.createElement('script'); ga.type = 'text/javascript'; ga.async = true;
-      ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
-      var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
-    })();
-  </script>
-
-
-</head>
-
-<body   >
-  <header role="banner"><hgroup>
-  <h1><a href="/">Cable Codes</a></h1>
-  
-</hgroup>
-
-</header>
-  <nav role="navigation"><ul class="subscription" data-subscription="rss">
-  <li><a href="/atom.xml" rel="subscribe-rss" title="subscribe via RSS">RSS</a></li>
-  
-</ul>
-  
-<form action="http://google.com/search" method="get">
-  <fieldset role="search">
-    <input type="hidden" name="q" value="site:cbron.github.com" />
-    <input class="search" type="text" name="q" results="0" placeholder="Search"/>
-  </fieldset>
-</form>
-  
-<ul class="main-navigation">
-  <li><a href="/">Blog</a></li>
-  <li><a href="/blog/archives">Archives</a></li>
-</ul>
-
-</nav>
-  <div id="main">
-    <div id="content">
-      <div class="blog-index">
-  
-  
-  
-    <article>
-      
-  <header>
+  <title><![CDATA[Cable Codes]]></title>
+  <link href="http://cbron.github.com/atom.xml" rel="self"/>
+  <link href="http://cbron.github.com/"/>
+  <updated>2014-07-03T10:07:59-07:00</updated>
+  <id>http://cbron.github.com/</id>
+  <author>
+    <name><![CDATA[cbron]]></name>
     
-      <h1 class="entry-title"><a href="/blog/2014/07/03/versioning-a-flask-restful-api+2/">Versioning a Flask-Restful Api</a></h1>
-    
-    
-      <p class="meta">
-        
-
-
-
-
-
-
-
+  </author>
+  <generator uri="http://octopress.org/">Octopress</generator>
 
   
-
-
-<time datetime="2014-07-03T09:04:00-07:00" pubdate data-updated="true">Jul 3<span>rd</span>, 2014</time>
-        
-      </p>
-    
-  </header>
-
-
-  <div class="entry-content"><p><em>Disclaimer</em>: This is not necessarily the <em>best</em> way to version an api through flask-restful, it is simply <em>one</em> way.</p>
+  <entry>
+    <title type="html"><![CDATA[Versioning a Flask-Restful api]]></title>
+    <link href="http://cbron.github.com/blog/2014/07/03/versioning-a-flask-restful-api+2/"/>
+    <updated>2014-07-03T09:04:00-07:00</updated>
+    <id>http://cbron.github.com/blog/2014/07/03/versioning-a-flask-restful-api 2</id>
+    <content type="html"><![CDATA[<p><em>Disclaimer</em>: This is not necessarily the <em>best</em> way to version an api through flask-restful, it is simply <em>one</em> way.</p>
 
 <p>There doesn&#8217;t seem to be a standard way to do this in flask-restful. I would recommend watching this video to see how its done in ruby on rails, as you can almost re-create this in python: <a href="http://railscasts.com/episodes/350-rest-api-versioning">http://railscasts.com/episodes/350-rest-api-versioning</a></p>
 
@@ -149,42 +64,15 @@ api.add_resource(UsersV2, '/v2/users')
 <p>The downside is that you may have a <code>/v2</code> folder with updates to users, a <code>/v3</code> folder with updates to just articles and a <code>/v4</code> folder with just updates to a yet-to-be-created view. But thats what command+T is for in Sublime :) You&#8217;ll also have to rename your classes from <code>Users</code> to <code>UsersV1/UsersV2</code> everytime you switch from a single file to a versioned file.</p>
 
 <p><em>P.S. For brevity I left most of the files out of the project structure, you will still need a <code>__init__.py</code> file in your views/, v1/, v2/, models/, etc.. folders</em></p>
-</div>
+]]></content>
+  </entry>
   
-  
-
-
-    </article>
-  
-  
-    <article>
-      
-  <header>
-    
-      <h1 class="entry-title"><a href="/blog/2014/07/03/versioning-a-flask-restful-api/">Versioning a Flask-Restful Api</a></h1>
-    
-    
-      <p class="meta">
-        
-
-
-
-
-
-
-
-
-  
-
-
-<time datetime="2014-07-03T09:04:00-07:00" pubdate data-updated="true">Jul 3<span>rd</span>, 2014</time>
-        
-      </p>
-    
-  </header>
-
-
-  <div class="entry-content"><p><em>Disclaimer</em>: This is not necessarily the <em>best</em> way to version an api through flask-restful, it is simply <em>one</em> way.</p>
+  <entry>
+    <title type="html"><![CDATA[Versioning a Flask-Restful api]]></title>
+    <link href="http://cbron.github.com/blog/2014/07/03/versioning-a-flask-restful-api/"/>
+    <updated>2014-07-03T09:04:00-07:00</updated>
+    <id>http://cbron.github.com/blog/2014/07/03/versioning-a-flask-restful-api</id>
+    <content type="html"><![CDATA[<p><em>Disclaimer</em>: This is not necessarily the <em>best</em> way to version an api through flask-restful, it is simply <em>one</em> way.</p>
 
 <p>There doesn&#8217;t seem to be a standard way to do this in flask-restful. I would recommend watching this video to see how its done in ruby on rails, as you can almost re-create this in python: <a href="http://railscasts.com/episodes/350-rest-api-versioning">http://railscasts.com/episodes/350-rest-api-versioning</a></p>
 
@@ -230,42 +118,15 @@ api.add_resource(UsersV2, '/v2/users')
 <p>The downside is that you may have a <code>/v2</code> folder with updates to users, a <code>/v3</code> folder with updates to just articles and a <code>/v4</code> folder with just updates to a yet-to-be-created view. But thats what command+T is for in Sublime :) You&#8217;ll also have to rename your classes from <code>Users</code> to <code>UsersV1/UsersV2</code> everytime you switch from a single file to a versioned file.</p>
 
 <p><em>P.S. For brevity I left most of the files out of the project structure, you will still need a <code>__init__.py</code> file in your views/, v1/, v2/, models/, etc.. folders</em></p>
-</div>
+]]></content>
+  </entry>
   
-  
-
-
-    </article>
-  
-  
-    <article>
-      
-  <header>
-    
-      <h1 class="entry-title"><a href="/blog/2014/03/25/auto-merge-pull-requests-on-github-except-the-master-branch/">Auto Merge Pull Requests on Github Except the Master Branch</a></h1>
-    
-    
-      <p class="meta">
-        
-
-
-
-
-
-
-
-
-  
-
-
-<time datetime="2014-03-25T08:39:00-07:00" pubdate data-updated="true">Mar 25<span>th</span>, 2014</time>
-        
-      </p>
-    
-  </header>
-
-
-  <div class="entry-content"><ul>
+  <entry>
+    <title type="html"><![CDATA[auto merge pull requests on github except the master branch]]></title>
+    <link href="http://cbron.github.com/blog/2014/03/25/auto-merge-pull-requests-on-github-except-the-master-branch/"/>
+    <updated>2014-03-25T08:39:00-07:00</updated>
+    <id>http://cbron.github.com/blog/2014/03/25/auto-merge-pull-requests-on-github-except-the-master-branch</id>
+    <content type="html"><![CDATA[<ul>
 <li>Problem: You want to merge all pull requests from developers who don&#8217;t have push access (they can&#8217;t merge the PR themselves).</li>
 <li>Stipulation: We probably shouldn&#8217;t do this on the master branch. Or staging for that matter.</li>
 <li>Solution: Use the github api (v3)
@@ -402,42 +263,15 @@ api.add_resource(UsersV2, '/v2/users')
 
 
 
-</div>
+]]></content>
+  </entry>
   
-  
-
-
-    </article>
-  
-  
-    <article>
-      
-  <header>
-    
-      <h1 class="entry-title"><a href="/blog/2013/12/30/draw-svg-path-on-scroll-tutorial/">Draw Svg Path on Scroll Tutorial</a></h1>
-    
-    
-      <p class="meta">
-        
-
-
-
-
-
-
-
-
-  
-
-
-<time datetime="2013-12-30T12:40:00-07:00" pubdate data-updated="true">Dec 30<span>th</span>, 2013</time>
-        
-      </p>
-    
-  </header>
-
-
-  <div class="entry-content"><p>The &#8221;<a href="http://www.nytimes.com/newsgraphics/2013/10/13/russia/?ref=global-home">Russia Left Behind</a>&#8221; article caught my attention a few months ago and I fell in love with it, especially the two maps.
+  <entry>
+    <title type="html"><![CDATA[draw svg path on scroll tutorial]]></title>
+    <link href="http://cbron.github.com/blog/2013/12/30/draw-svg-path-on-scroll-tutorial/"/>
+    <updated>2013-12-30T12:40:00-07:00</updated>
+    <id>http://cbron.github.com/blog/2013/12/30/draw-svg-path-on-scroll-tutorial</id>
+    <content type="html"><![CDATA[<p>The &#8221;<a href="http://www.nytimes.com/newsgraphics/2013/10/13/russia/?ref=global-home">Russia Left Behind</a>&#8221; article caught my attention a few months ago and I fell in love with it, especially the two maps.
 I will quickly go over one way to draw a line on user scroll, although this way is different from the way the New York Times did it. From the looks of it they used <a href="https://github.com/mbostock/topojson">TopoJSON</a>.</p>
 
 <p><a href="http://www.calebbron.com/stuff/svg.html">Demo</a></p>
@@ -535,42 +369,15 @@ I will quickly go over one way to draw a line on user scroll, although this way 
 <h3>Resources</h3>
 
 <p><a href="http://stackoverflow.com/a/14282391/552036">http://stackoverflow.com/questions/14275249/how-can-i-animate-a-progressive-drawing-of-svg-path</a></p>
-</div>
+]]></content>
+  </entry>
   
-  
-
-
-    </article>
-  
-  
-    <article>
-      
-  <header>
-    
-      <h1 class="entry-title"><a href="/blog/2013/10/09/reload-page-and-add-param-on-checkbox-click-with-rails/">Reload Page and Add Param on Checkbox Click With Rails</a></h1>
-    
-    
-      <p class="meta">
-        
-
-
-
-
-
-
-
-
-  
-
-
-<time datetime="2013-10-09T10:03:00-07:00" pubdate data-updated="true">Oct 9<span>th</span>, 2013</time>
-        
-      </p>
-    
-  </header>
-
-
-  <div class="entry-content">
+  <entry>
+    <title type="html"><![CDATA[Reload page and add param on checkbox click with Rails]]></title>
+    <link href="http://cbron.github.com/blog/2013/10/09/reload-page-and-add-param-on-checkbox-click-with-rails/"/>
+    <updated>2013-10-09T10:03:00-07:00</updated>
+    <id>http://cbron.github.com/blog/2013/10/09/reload-page-and-add-param-on-checkbox-click-with-rails</id>
+    <content type="html"><![CDATA[
 
 <figure class='code'> <div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
 <span class='line-number'>2</span>
@@ -580,42 +387,15 @@ I will quickly go over one way to draw a line on user scroll, although this way 
 </span><span class='line'>  <span class="o">=</span> <span class="n">label_tag</span> <span class="ss">:my_filter</span><span class="p">,</span> <span class="s2">&quot;My Filter&quot;</span>
 </span></code></pre></td></tr></table></div></figure>
 
-</div>
+]]></content>
+  </entry>
   
-  
-
-
-    </article>
-  
-  
-    <article>
-      
-  <header>
-    
-      <h1 class="entry-title"><a href="/blog/2013/09/18/deploy-via-github-on-pull-request-merge/">Deploy via Github on Pull Request Merge</a></h1>
-    
-    
-      <p class="meta">
-        
-
-
-
-
-
-
-
-
-  
-
-
-<time datetime="2013-09-18T16:50:00-07:00" pubdate data-updated="true">Sep 18<span>th</span>, 2013</time>
-        
-      </p>
-    
-  </header>
-
-
-  <div class="entry-content"><p><em>(This is only a concept, but I proved out all the parts seperately so they should work together)</em></p>
+  <entry>
+    <title type="html"><![CDATA[deploy via github on pull request merge]]></title>
+    <link href="http://cbron.github.com/blog/2013/09/18/deploy-via-github-on-pull-request-merge/"/>
+    <updated>2013-09-18T16:50:00-07:00</updated>
+    <id>http://cbron.github.com/blog/2013/09/18/deploy-via-github-on-pull-request-merge</id>
+    <content type="html"><![CDATA[<p><em>(This is only a concept, but I proved out all the parts seperately so they should work together)</em></p>
 
 <p>The downside of github hooks is that right now the only one available through the web is when the repo receives a push. We wanted to have the repo update anytime anyone merges a pull request into the master branch.</p>
 
@@ -658,7 +438,7 @@ token personal_access_token_XXXXXXXXXXXXXXXXXXXX</p>
 
 <p>Using the &#8220;Advanced REST Client&#8221; extension in chrome it looks something like this:</p>
 
-<p><img src="/images/rest_client.png" /></p>
+<p><img src="http://cbron.github.com/images/rest_client.png" /></p>
 
 <p>Send that and you should get a success message.</p>
 
@@ -744,42 +524,15 @@ token personal_access_token_XXXXXXXXXXXXXXXXXXXX</p>
 </li>
 </ul>
 
-</div>
+]]></content>
+  </entry>
   
-  
-
-
-    </article>
-  
-  
-    <article>
-      
-  <header>
-    
-      <h1 class="entry-title"><a href="/blog/2013/07/12/devise-constantly-logging-you-out/">Devise Constantly Logging You Out ?</a></h1>
-    
-    
-      <p class="meta">
-        
-
-
-
-
-
-
-
-
-  
-
-
-<time datetime="2013-07-12T10:47:00-07:00" pubdate data-updated="true">Jul 12<span>th</span>, 2013</time>
-        
-      </p>
-    
-  </header>
-
-
-  <div class="entry-content"><h2>The problem</h2>
+  <entry>
+    <title type="html"><![CDATA[Devise constantly logging you out ?]]></title>
+    <link href="http://cbron.github.com/blog/2013/07/12/devise-constantly-logging-you-out/"/>
+    <updated>2013-07-12T10:47:00-07:00</updated>
+    <id>http://cbron.github.com/blog/2013/07/12/devise-constantly-logging-you-out</id>
+    <content type="html"><![CDATA[<h2>The problem</h2>
 
 <p>I had a jquery mobile app living inside a rails app. I would login and move around the site a few times and suddenly I would be logged out. I was massively confused for a solid hour.</p>
 
@@ -813,42 +566,15 @@ token personal_access_token_XXXXXXXXXXXXXXXXXXXX</p>
 
 
 <p>That will attach the correct csrf token along with your ajax requests. You should now no longer see the CSRF warning in your server logs.</p>
-</div>
+]]></content>
+  </entry>
   
-  
-
-
-    </article>
-  
-  
-    <article>
-      
-  <header>
-    
-      <h1 class="entry-title"><a href="/blog/2013/06/04/duplicate-assets-on-a-staging-environment-with-capistrano/">Dealing With Duplicate Assets in a Staging Environment When Deploying With Capistrano</a></h1>
-    
-    
-      <p class="meta">
-        
-
-
-
-
-
-
-
-
-  
-
-
-<time datetime="2013-06-04T10:13:00-07:00" pubdate data-updated="true">Jun 4<span>th</span>, 2013</time>
-        
-      </p>
-    
-  </header>
-
-
-  <div class="entry-content"><p>When you use something like <code>$('#change_email_form').toggle(300);</code> and it gets included twice on the same page, everything doesn&#8217;t seem to work as expected&#8230;</p>
+  <entry>
+    <title type="html"><![CDATA[Dealing with duplicate assets in a staging environment when deploying with capistrano]]></title>
+    <link href="http://cbron.github.com/blog/2013/06/04/duplicate-assets-on-a-staging-environment-with-capistrano/"/>
+    <updated>2013-06-04T10:13:00-07:00</updated>
+    <id>http://cbron.github.com/blog/2013/06/04/duplicate-assets-on-a-staging-environment-with-capistrano</id>
+    <content type="html"><![CDATA[<p>When you use something like <code>$('#change_email_form').toggle(300);</code> and it gets included twice on the same page, everything doesn&#8217;t seem to work as expected&#8230;</p>
 
 <p>I ran into this problem when setting up a staging environment using capistrano. My capfile had the usual <code>load 'deploy/assets'</code> which precompiles assets on both production and staging. And everything in
 production worked fine, but staging not so much. After a few failed attemps I found a fix for the problem.</p>
@@ -887,42 +613,15 @@ On the first request the assets are compiled and cached as outlined in developme
 </span><span class='line'><span class="n">config</span><span class="o">.</span><span class="n">assets</span><span class="o">.</span><span class="n">debug</span> <span class="o">=</span> <span class="kp">true</span>
 </span></code></pre></td></tr></table></div></figure>
 
-</div>
+]]></content>
+  </entry>
   
-  
-
-
-    </article>
-  
-  
-    <article>
-      
-  <header>
-    
-      <h1 class="entry-title"><a href="/blog/2013/02/20/how-to-tell-if-today-is-the-first-of-the-week-slash-month-slash-year-with-ruby/">How to Tell if Today Is the First of the Week/Month/Year With Ruby</a></h1>
-    
-    
-      <p class="meta">
-        
-
-
-
-
-
-
-
-
-  
-
-
-<time datetime="2013-02-20T00:00:00-07:00" pubdate data-updated="true">Feb 20<span>th</span>, 2013</time>
-        
-      </p>
-    
-  </header>
-
-
-  <div class="entry-content"><p>I had a project recently where a cron would fire early in the morning and generate stats for the previous day/week/month/year. I needed to know when it fired if today was the beginning of a new month so I could generate last month&#8217;s stats.</p>
+  <entry>
+    <title type="html"><![CDATA[How to tell if today is the first of the Week/Month/Year with ruby]]></title>
+    <link href="http://cbron.github.com/blog/2013/02/20/how-to-tell-if-today-is-the-first-of-the-week-slash-month-slash-year-with-ruby/"/>
+    <updated>2013-02-20T00:00:00-07:00</updated>
+    <id>http://cbron.github.com/blog/2013/02/20/how-to-tell-if-today-is-the-first-of-the-week-slash-month-slash-year-with-ruby</id>
+    <content type="html"><![CDATA[<p>I had a project recently where a cron would fire early in the morning and generate stats for the previous day/week/month/year. I needed to know when it fired if today was the beginning of a new month so I could generate last month&#8217;s stats.</p>
 
 <figure class='code'> <div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
 <span class='line-number'>2</span>
@@ -948,42 +647,15 @@ On the first request the assets are compiled and cached as outlined in developme
 </span><span class='line'><span class="no">Time</span><span class="o">.</span><span class="n">now</span><span class="o">.</span><span class="n">beginning_of_year</span> <span class="o">==</span> <span class="no">Time</span><span class="o">.</span><span class="n">now</span><span class="o">.</span><span class="n">beginning_of_hour</span>
 </span></code></pre></td></tr></table></div></figure>
 
-</div>
+]]></content>
+  </entry>
   
-  
-
-
-    </article>
-  
-  
-    <article>
-      
-  <header>
-    
-      <h1 class="entry-title"><a href="/blog/2013/01/12/install-monit-on-centos-6-from-source/">Install Monit on CentOS 6 From Source</a></h1>
-    
-    
-      <p class="meta">
-        
-
-
-
-
-
-
-
-
-  
-
-
-<time datetime="2013-01-12T15:01:00-07:00" pubdate data-updated="true">Jan 12<span>th</span>, 2013</time>
-        
-      </p>
-    
-  </header>
-
-
-  <div class="entry-content"><h3>Resources</h3>
+  <entry>
+    <title type="html"><![CDATA[Install monit on CentOS 6 from source]]></title>
+    <link href="http://cbron.github.com/blog/2013/01/12/install-monit-on-centos-6-from-source/"/>
+    <updated>2013-01-12T15:01:00-07:00</updated>
+    <id>http://cbron.github.com/blog/2013/01/12/install-monit-on-centos-6-from-source</id>
+    <content type="html"><![CDATA[<h3>Resources</h3>
 
 <p>Monit: <a href="http://mmonit.com/monit/">http://mmonit.com/monit/</a> <br/>
 Wiki: <a href="http://mmonit.com/monit/documentation/monit.html">http://mmonit.com/monit/documentation/monit.html</a> <br/>
@@ -1079,149 +751,27 @@ After this is in place you should have the <code>service monit restart</code> co
 
 /usr/local/bin/monit
 </code></pre>
-</div>
+]]></content>
+  </entry>
   
+  <entry>
+    <title type="html"><![CDATA[Delete non-unique hash values in ruby]]></title>
+    <link href="http://cbron.github.com/blog/2013/01/12/delete-non-unique-hash-values-in-ruby/"/>
+    <updated>2013-01-12T14:32:00-07:00</updated>
+    <id>http://cbron.github.com/blog/2013/01/12/delete-non-unique-hash-values-in-ruby</id>
+    <content type="html"><![CDATA[
+
+<figure class='code'> <div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+</pre></td><td class='code'><pre><code class='ruby'><span class='line'><span class="n">h</span> <span class="o">=</span> <span class="p">{</span><span class="ss">:cat</span> <span class="o">=&gt;</span> <span class="s2">&quot;cat&quot;</span><span class="p">,</span> <span class="ss">:dog</span> <span class="o">=&gt;</span> <span class="s2">&quot;dog&quot;</span><span class="p">,</span> <span class="ss">:fish</span> <span class="o">=&gt;</span> <span class="s2">&quot;dog&quot;</span><span class="p">}</span>
+</span><span class='line'><span class="n">arr</span> <span class="o">=</span> <span class="nb">Array</span><span class="o">.</span><span class="n">new</span>
+</span><span class='line'><span class="n">h</span><span class="o">.</span><span class="n">each</span><span class="p">{</span><span class="o">|</span><span class="n">key</span><span class="p">,</span> <span class="n">val</span><span class="o">|</span> <span class="n">arr</span><span class="o">.</span><span class="n">include?</span><span class="p">(</span><span class="n">val</span><span class="p">)</span> <span class="p">?</span> <span class="n">h</span><span class="o">.</span><span class="n">delete</span><span class="p">(</span><span class="n">key</span><span class="p">)</span> <span class="p">:</span> <span class="n">arr</span> <span class="err">«</span> <span class="n">val</span> <span class="p">}</span>
+</span><span class='line'><span class="o">=&gt;</span> <span class="p">{</span><span class="ss">:cat</span><span class="o">=&gt;</span><span class="s2">&quot;cat&quot;</span><span class="p">,</span> <span class="ss">:dog</span><span class="o">=&gt;</span><span class="s2">&quot;dog&quot;</span><span class="p">}</span>
+</span></code></pre></td></tr></table></div></figure>
+
+]]></content>
+  </entry>
   
-
-
-    </article>
-  
-  <div class="pagination">
-    
-      <a class="prev" href="/blog/page/2/">&larr; Older</a>
-    
-    <a href="/blog/archives">Blog Archives</a>
-    
-  </div>
-</div>
-<aside class="sidebar">
-  
-    <section>
-  <h1>Recent Posts</h1>
-  <ul id="recent_posts">
-    
-      <li class="post">
-        <a href="/blog/2014/07/03/versioning-a-flask-restful-api+2/">Versioning a Flask-Restful api</a>
-      </li>
-    
-      <li class="post">
-        <a href="/blog/2014/07/03/versioning-a-flask-restful-api/">Versioning a Flask-Restful api</a>
-      </li>
-    
-      <li class="post">
-        <a href="/blog/2014/03/25/auto-merge-pull-requests-on-github-except-the-master-branch/">auto merge pull requests on github except the master branch</a>
-      </li>
-    
-      <li class="post">
-        <a href="/blog/2013/12/30/draw-svg-path-on-scroll-tutorial/">draw svg path on scroll tutorial</a>
-      </li>
-    
-      <li class="post">
-        <a href="/blog/2013/10/09/reload-page-and-add-param-on-checkbox-click-with-rails/">Reload page and add param on checkbox click with Rails</a>
-      </li>
-    
-  </ul>
-</section>
-<section>
-  <h1>Sticky</h1>
-  <p><a href="https://www.evernote.com/shard/s182/sh/8b392a93-e5bf-4160-959d-f18f8bf22bee/a9d542dc20090b3cfd74d62fe4b1ae6d" target="_blank">Linux Cheatsheet</a></p>
-</section>
-
-<section>
-  <h1>GitHub Repos</h1>
-  <ul id="gh_repos">
-    <li class="loading">Status updating&#8230;</li>
-  </ul>
-  
-  <a href="https://github.com/cbron">@cbron</a> on GitHub
-  
-  <script type="text/javascript">
-    $.domReady(function(){
-        if (!window.jXHR){
-            var jxhr = document.createElement('script');
-            jxhr.type = 'text/javascript';
-            jxhr.src = '/javascripts/libs/jXHR.js';
-            var s = document.getElementsByTagName('script')[0];
-            s.parentNode.insertBefore(jxhr, s);
-        }
-
-        github.showRepos({
-            user: 'cbron',
-            count: 0,
-            skip_forks: true,
-            target: '#gh_repos'
-        });
-    });
-  </script>
-  <script src="/javascripts/github.js" type="text/javascript"> </script>
-</section>
-
-
-<section>
-  <h1>Latest Tweets</h1>
-  <ul id="tweets">
-    <li class="loading">Status updating&#8230;</li>
-  </ul>
-  <script type="text/javascript">
-    $.domReady(function(){
-      getTwitterFeed("calebbron", 4, false);
-    });
-  </script>
-  <script src="/javascripts/twitter.js" type="text/javascript"> </script>
-  
-    <a href="http://twitter.com/calebbron" class="twitter-follow-button" data-show-count="false">Follow @calebbron</a>
-  
-</section>
-
-
-
-
-
-  
-</aside>
-
-    </div>
-  </div>
-  <footer role="contentinfo"><p>
-  Copyright &copy; 2014 - cbron -
-  <span class="credit">Powered by <a href="http://octopress.org">Octopress</a></span>
-</p>
-
-</footer>
-  
-
-<script type="text/javascript">
-      var disqus_shortname = 'cablecodes';
-      
-        
-        var disqus_script = 'count.js';
-      
-    (function () {
-      var dsq = document.createElement('script'); dsq.type = 'text/javascript'; dsq.async = true;
-      dsq.src = 'http://' + disqus_shortname + '.disqus.com/' + disqus_script;
-      (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
-    }());
-</script>
-
-
-
-
-
-
-
-  <script type="text/javascript">
-    (function(){
-      var twitterWidgets = document.createElement('script');
-      twitterWidgets.type = 'text/javascript';
-      twitterWidgets.async = true;
-      twitterWidgets.src = 'http://platform.twitter.com/widgets.js';
-      document.getElementsByTagName('head')[0].appendChild(twitterWidgets);
-    })();
-  </script>
-
-
-
-
-
-</body>
-</html>
+</feed>

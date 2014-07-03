@@ -1,0 +1,79 @@
+<?xml version="1.0" encoding="utf-8"?>
+<feed xmlns="http://www.w3.org/2005/Atom">
+
+  <title><![CDATA[Category: capistrano, | Cable Codes]]></title>
+  <link href="http://cbron.github.com/blog/categories/capistrano-/atom.xml" rel="self"/>
+  <link href="http://cbron.github.com/"/>
+  <updated>2014-07-03T10:07:59-07:00</updated>
+  <id>http://cbron.github.com/</id>
+  <author>
+    <name><![CDATA[cbron]]></name>
+    
+  </author>
+  <generator uri="http://octopress.org/">Octopress</generator>
+
+  
+  <entry>
+    <title type="html"><![CDATA[Dealing with duplicate assets in a staging environment when deploying with capistrano]]></title>
+    <link href="http://cbron.github.com/blog/2013/06/04/duplicate-assets-on-a-staging-environment-with-capistrano/"/>
+    <updated>2013-06-04T10:13:00-07:00</updated>
+    <id>http://cbron.github.com/blog/2013/06/04/duplicate-assets-on-a-staging-environment-with-capistrano</id>
+    <content type="html"><![CDATA[<p>When you use something like <code>$('#change_email_form').toggle(300);</code> and it gets included twice on the same page, everything doesn't seem to work as expected...</p>
+
+<p>I ran into this problem when setting up a staging environment using capistrano. My capfile had the usual <code>load 'deploy/assets'</code> which precompiles assets on both production and staging. And everything in
+production worked fine, but staging not so much. After a few failed attemps I found a fix for the problem.</p>
+
+<p><div class='bogus-wrapper'><notextile><figure class='code'> <div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+</pre></td><td class='code'><pre><code class='ruby'><span class='line'><span class="n">config</span><span class="o">.</span><span class="n">assets</span><span class="o">.</span><span class="n">compile</span> <span class="o">=</span> <span class="kp">false</span>
+</span></code></pre></td></tr></table></div></figure></notextile></div></p>
+
+<p>Ruby guides has this to say about assets.compile:</p>
+
+<p><em>In some circumstances you may wish to use live compilation. In this mode all requests for assets in the pipeline are handled by Sprockets directly.
+On the first request the assets are compiled and cached as outlined in development above, and the manifest names used in the helpers are altered to include the MD5 hash.</em></p>
+
+<p>So basically capistrano was compiling the assets and throwing them in <code>public/assets</code> and at the same time Sprockets was trying to handle the requests by using the <code>app/assets</code> directory and all the javascript was included twice. In this case it was both in our <code>subscribe.js</code> and our <code>application.js</code>.</p>
+
+<p>By setting <code>config.assets.compile = false</code> you tell Sprockets to stop attempting to serve your <code>app/assets</code> and solely use your public assets.</p>
+
+<p>This is my final configuration for assets in config/environments/staging.rb</p>
+
+<p><div class='bogus-wrapper'><notextile><figure class='code'> <div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+<span class='line-number'>12</span>
+<span class='line-number'>13</span>
+<span class='line-number'>14</span>
+<span class='line-number'>15</span>
+<span class='line-number'>16</span>
+<span class='line-number'>17</span>
+</pre></td><td class='code'><pre><code class='ruby'><span class='line'><span class="o">&lt;</span><span class="sr">/p&gt;</span>
+</span><span class='line'>
+</span><span class='line'><span class="sr">&lt;h1&gt;Disable Rails&#39;s static asset server (Apache or nginx will already do this)&lt;/</span><span class="n">h1</span><span class="o">&gt;</span>
+</span><span class='line'>
+</span><span class='line'><span class="o">&lt;</span><span class="nb">p</span><span class="o">&gt;</span><span class="n">config</span><span class="o">.</span><span class="n">serve_static_assets</span> <span class="o">=</span> <span class="kp">false</span><span class="o">&lt;</span><span class="sr">/p&gt;</span>
+</span><span class='line'>
+</span><span class='line'><span class="sr">&lt;h1&gt;Don&#39;t fallback to assets pipeline if a precompiled asset is missed&lt;/</span><span class="n">h1</span><span class="o">&gt;</span>
+</span><span class='line'>
+</span><span class='line'><span class="o">&lt;</span><span class="nb">p</span><span class="o">&gt;</span><span class="n">config</span><span class="o">.</span><span class="n">assets</span><span class="o">.</span><span class="n">compile</span> <span class="o">=</span> <span class="kp">false</span><span class="o">&lt;</span><span class="sr">/p&gt;</span>
+</span><span class='line'>
+</span><span class='line'><span class="sr">&lt;h1&gt;Generate digests for assets URLs&lt;/</span><span class="n">h1</span><span class="o">&gt;</span>
+</span><span class='line'>
+</span><span class='line'><span class="o">&lt;</span><span class="nb">p</span><span class="o">&gt;</span><span class="n">config</span><span class="o">.</span><span class="n">assets</span><span class="o">.</span><span class="n">digest</span> <span class="o">=</span> <span class="kp">true</span><span class="o">&lt;</span><span class="sr">/p&gt;</span>
+</span><span class='line'>
+</span><span class='line'><span class="sr">&lt;h1&gt;Expands the lines which load the assets&lt;/</span><span class="n">h1</span><span class="o">&gt;</span>
+</span><span class='line'>
+</span><span class='line'><span class="o">&lt;</span><span class="nb">p</span><span class="o">&gt;</span><span class="n">config</span><span class="o">.</span><span class="n">assets</span><span class="o">.</span><span class="n">debug</span> <span class="o">=</span> <span class="kp">true</span>
+</span></code></pre></td></tr></table></div></figure></notextile></div></p>
+]]></content>
+  </entry>
+  
+</feed>

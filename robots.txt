@@ -1,0 +1,4 @@
+User-agent: *
+Disallow: 
+
+Sitemap: http://cbron.github.com/sitemap.xml 

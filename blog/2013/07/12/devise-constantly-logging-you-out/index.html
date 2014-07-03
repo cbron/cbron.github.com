@@ -1,0 +1,327 @@
+
+<!DOCTYPE html>
+<!--[if IEMobile 7 ]><html class="no-js iem7"><![endif]-->
+<!--[if lt IE 9]><html class="no-js lte-ie8"><![endif]-->
+<!--[if (gt IE 8)|(gt IEMobile 7)|!(IEMobile)|!(IE)]><!--><html class="no-js" lang="en"><!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  <title>Devise constantly logging you out ? - Cable Codes</title>
+  <meta name="author" content="cbron">
+
+  
+  <meta name="description" content="The problem I had a jquery mobile app living inside a rails app. I would login and move around the site a few times and suddenly I would be logged &hellip;">
+  
+
+  <!-- http://t.co/dKP3o1e -->
+  <meta name="HandheldFriendly" content="True">
+  <meta name="MobileOptimized" content="320">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+
+  
+  <link rel="canonical" href="http://cbron.github.com/blog/2013/07/12/devise-constantly-logging-you-out/">
+  <link href="/favicon.png" rel="icon">
+  <link href="/stylesheets/screen.css" media="screen, projection" rel="stylesheet" type="text/css">
+  <script src="/javascripts/modernizr-2.0.js"></script>
+  <script src="/javascripts/ender.js"></script>
+  <script src="/javascripts/octopress.js" type="text/javascript"></script>
+  <link href="/atom.xml" rel="alternate" title="Cable Codes" type="application/atom+xml">
+  <!--Fonts from Google"s Web font directory at http://google.com/webfonts -->
+<link href="http://fonts.googleapis.com/css?family=PT+Serif:regular,italic,bold,bolditalic" rel="stylesheet" type="text/css">
+<link href="http://fonts.googleapis.com/css?family=PT+Sans:regular,italic,bold,bolditalic" rel="stylesheet" type="text/css">
+
+  
+  <script type="text/javascript">
+    var _gaq = _gaq || [];
+    _gaq.push(['_setAccount', 'UA-43046341-1']);
+    _gaq.push(['_trackPageview']);
+
+    (function() {
+      var ga = document.createElement('script'); ga.type = 'text/javascript'; ga.async = true;
+      ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
+      var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
+    })();
+  </script>
+
+
+</head>
+
+<body   >
+  <header role="banner"><hgroup>
+  <h1><a href="/">Cable Codes</a></h1>
+  
+</hgroup>
+
+</header>
+  <nav role="navigation"><ul class="subscription" data-subscription="rss">
+  <li><a href="/atom.xml" rel="subscribe-rss" title="subscribe via RSS">RSS</a></li>
+  
+</ul>
+  
+<form action="http://google.com/search" method="get">
+  <fieldset role="search">
+    <input type="hidden" name="q" value="site:cbron.github.com" />
+    <input class="search" type="text" name="q" results="0" placeholder="Search"/>
+  </fieldset>
+</form>
+  
+<ul class="main-navigation">
+  <li><a href="/">Blog</a></li>
+  <li><a href="/blog/archives">Archives</a></li>
+</ul>
+
+</nav>
+  <div id="main">
+    <div id="content">
+      <div>
+<article class="hentry" role="article">
+  
+  <header>
+    
+      <h1 class="entry-title">Devise Constantly Logging You Out ?</h1>
+    
+    
+      <p class="meta">
+        
+
+
+
+
+
+
+
+
+  
+
+
+<time datetime="2013-07-12T10:47:00-07:00" pubdate data-updated="true">Jul 12<span>th</span>, 2013</time>
+        
+      </p>
+    
+  </header>
+
+
+<div class="entry-content"><h2>The problem</h2>
+
+<p>I had a jquery mobile app living inside a rails app. I would login and move around the site a few times and suddenly I would be logged out. I was massively confused for a solid hour.</p>
+
+<h2>What was happening</h2>
+
+<p>I went digging around in Warden which Devise uses to handle sessions, then I remembered seeing this in my server logs:</p>
+
+<pre><code>WARNING: Can't verify CSRF token authenticity
+</code></pre>
+
+<p>I did a little research and realized that my app was making multiple ajax requests while I was moving around. When rails can&#8217;t verify the CSRF token the first thing it does is kill all sessions, including Devise user sessions.</p>
+
+<h2>How I fixed it</h2>
+
+<p><a href="http://weblog.rubyonrails.org/2011/2/8/csrf-protection-bypass-in-ruby-on-rails/">I found this rails post</a>,
+<a href="http://excid3.com/blog/rails-tip-2-include-csrf-token-with-every-ajax-request/#.UeA9lPZNYVd">and this blog post</a></p>
+
+<p><a href="http://stackoverflow.com/questions/7203304/warning-cant-verify-csrf-token-authenticity-rails">This stack overflow question also goes into greater detail</a></p>
+
+<p>In short, add this to your js somewhere in the header:</p>
+
+<figure class='code'> <div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+</pre></td><td class='code'><pre><code class='javascript'><span class='line'><span class="nx">$</span><span class="p">(</span><span class="nb">document</span><span class="p">).</span><span class="nx">ajaxSend</span><span class="p">(</span><span class="kd">function</span><span class="p">(</span><span class="nx">e</span><span class="p">,</span> <span class="nx">xhr</span><span class="p">,</span> <span class="nx">options</span><span class="p">)</span> <span class="p">{</span>
+</span><span class='line'>  <span class="kd">var</span> <span class="nx">token</span> <span class="o">=</span> <span class="nx">$</span><span class="p">(</span><span class="s2">&quot;meta[name=&#39;csrf-token&#39;]&quot;</span><span class="p">).</span><span class="nx">attr</span><span class="p">(</span><span class="s2">&quot;content&quot;</span><span class="p">);</span>
+</span><span class='line'>  <span class="nx">xhr</span><span class="p">.</span><span class="nx">setRequestHeader</span><span class="p">(</span><span class="s2">&quot;X-CSRF-Token&quot;</span><span class="p">,</span> <span class="nx">token</span><span class="p">);</span>
+</span><span class='line'><span class="p">});</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>That will attach the correct csrf token along with your ajax requests. You should now no longer see the CSRF warning in your server logs.</p>
+</div>
+
+
+  <footer>
+    <p class="meta">
+      
+  
+
+<span class="byline author vcard">Posted by <span class="fn">cbron</span></span>
+
+      
+
+
+
+
+
+
+
+
+  
+
+
+<time datetime="2013-07-12T10:47:00-07:00" pubdate data-updated="true">Jul 12<span>th</span>, 2013</time>
+      
+
+
+    </p>
+    
+      <div class="sharing">
+  
+  <a href="http://twitter.com/share" class="twitter-share-button" data-url="http://cbron.github.com/blog/2013/07/12/devise-constantly-logging-you-out/" data-via="calebbron" data-counturl="http://cbron.github.com/blog/2013/07/12/devise-constantly-logging-you-out/" >Tweet</a>
+  
+  
+  
+</div>
+
+    
+    <p class="meta">
+      
+        <a class="basic-alignment left" href="/blog/2013/06/04/duplicate-assets-on-a-staging-environment-with-capistrano/" title="Previous Post: Dealing with duplicate assets in a staging environment when deploying with capistrano">&laquo; Dealing with duplicate assets in a staging environment when deploying with capistrano</a>
+      
+      
+        <a class="basic-alignment right" href="/blog/2013/09/18/deploy-via-github-on-pull-request-merge/" title="Next Post: deploy via github on pull request merge">deploy via github on pull request merge &raquo;</a>
+      
+    </p>
+  </footer>
+</article>
+
+  <section>
+    <h1>Comments</h1>
+    <div id="disqus_thread" aria-live="polite"><noscript>Please enable JavaScript to view the <a href="http://disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
+</div>
+  </section>
+
+</div>
+
+<aside class="sidebar">
+  
+    <section>
+  <h1>Recent Posts</h1>
+  <ul id="recent_posts">
+    
+      <li class="post">
+        <a href="/blog/2014/07/03/versioning-a-flask-restful-api+2/">Versioning a Flask-Restful api</a>
+      </li>
+    
+      <li class="post">
+        <a href="/blog/2014/07/03/versioning-a-flask-restful-api/">Versioning a Flask-Restful api</a>
+      </li>
+    
+      <li class="post">
+        <a href="/blog/2014/03/25/auto-merge-pull-requests-on-github-except-the-master-branch/">auto merge pull requests on github except the master branch</a>
+      </li>
+    
+      <li class="post">
+        <a href="/blog/2013/12/30/draw-svg-path-on-scroll-tutorial/">draw svg path on scroll tutorial</a>
+      </li>
+    
+      <li class="post">
+        <a href="/blog/2013/10/09/reload-page-and-add-param-on-checkbox-click-with-rails/">Reload page and add param on checkbox click with Rails</a>
+      </li>
+    
+  </ul>
+</section>
+<section>
+  <h1>Sticky</h1>
+  <p><a href="https://www.evernote.com/shard/s182/sh/8b392a93-e5bf-4160-959d-f18f8bf22bee/a9d542dc20090b3cfd74d62fe4b1ae6d" target="_blank">Linux Cheatsheet</a></p>
+</section>
+
+<section>
+  <h1>GitHub Repos</h1>
+  <ul id="gh_repos">
+    <li class="loading">Status updating...</li>
+  </ul>
+  
+  <a href="https://github.com/cbron">@cbron</a> on GitHub
+  
+  <script type="text/javascript">
+    $.domReady(function(){
+        if (!window.jXHR){
+            var jxhr = document.createElement('script');
+            jxhr.type = 'text/javascript';
+            jxhr.src = '/javascripts/libs/jXHR.js';
+            var s = document.getElementsByTagName('script')[0];
+            s.parentNode.insertBefore(jxhr, s);
+        }
+
+        github.showRepos({
+            user: 'cbron',
+            count: 0,
+            skip_forks: true,
+            target: '#gh_repos'
+        });
+    });
+  </script>
+  <script src="/javascripts/github.js" type="text/javascript"> </script>
+</section>
+
+
+<section>
+  <h1>Latest Tweets</h1>
+  <ul id="tweets">
+    <li class="loading">Status updating...</li>
+  </ul>
+  <script type="text/javascript">
+    $.domReady(function(){
+      getTwitterFeed("calebbron", 4, false);
+    });
+  </script>
+  <script src="/javascripts/twitter.js" type="text/javascript"> </script>
+  
+    <a href="http://twitter.com/calebbron" class="twitter-follow-button" data-show-count="false">Follow @calebbron</a>
+  
+</section>
+
+
+
+
+
+  
+</aside>
+
+
+    </div>
+  </div>
+  <footer role="contentinfo"><p>
+  Copyright &copy; 2014 - cbron -
+  <span class="credit">Powered by <a href="http://octopress.org">Octopress</a></span>
+</p>
+
+</footer>
+  
+
+<script type="text/javascript">
+      var disqus_shortname = 'cablecodes';
+      
+        
+        // var disqus_developer = 1;
+        var disqus_identifier = 'http://cbron.github.com/blog/2013/07/12/devise-constantly-logging-you-out/';
+        var disqus_url = 'http://cbron.github.com/blog/2013/07/12/devise-constantly-logging-you-out/';
+        var disqus_script = 'embed.js';
+      
+    (function () {
+      var dsq = document.createElement('script'); dsq.type = 'text/javascript'; dsq.async = true;
+      dsq.src = 'http://' + disqus_shortname + '.disqus.com/' + disqus_script;
+      (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+    }());
+</script>
+
+
+
+
+
+
+
+  <script type="text/javascript">
+    (function(){
+      var twitterWidgets = document.createElement('script');
+      twitterWidgets.type = 'text/javascript';
+      twitterWidgets.async = true;
+      twitterWidgets.src = 'http://platform.twitter.com/widgets.js';
+      document.getElementsByTagName('head')[0].appendChild(twitterWidgets);
+    })();
+  </script>
+
+
+
+
+
+</body>
+</html>
