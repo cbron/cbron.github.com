@@ -1,0 +1,202 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <title>How to setup SAML in flask with python-saml — caleb bron</title>
+    <meta name="description" content="Title: How to setup SAML in flask with python-saml; Date: 2015-07-01; Author: caleb">
+    <meta name="author" content="caleb">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <!-- Le HTML5 shim, for IE6-8 support of HTML elements -->
+    <!--[if lt IE 9]>
+        <script src="html5.js"></script>
+        <![endif]-->
+    <link href="./ipython.css" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css?family=Open+Sans:300,400" rel="stylesheet">
+    <link href="https://maxcdn.bootstrapcdn.com/bootstrap/3.2.0/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://maxcdn.bootstrapcdn.com/font-awesome/4.1.0/css/font-awesome.min.css" rel="stylesheet">
+    <link href="https://maxcdn.bootstrapcdn.com/bootswatch/3.2.0/simplex/bootstrap.min.css" rel="stylesheet">
+    <link href="./local.css" rel="stylesheet">
+    <link href="./pygments.css" rel="stylesheet">
+</head>
+<body>
+<div class="container">
+    <div class="page-header"></div>
+    <div class="row">
+        <div class="col-md-8 col-md-offset-2">
+<div class="article" itemscope itemtype="http://schema.org/BlogPosting">
+    <div class="text-center article-header">
+        <h1 itemprop="name headline" class="article-title">How to setup SAML in flask with python-saml</h1>
+        <time datetime="2015-07-01T00:00:00-07:00" itemprop="datePublished">Wed 01 July 2015</time>
+    </div>
+    <div itemprop="articleBody" class="article-body"><h3>Overview</h3>
+<p>If you're new to SAML the first thing to do is get your head around it:
+<a href="http://en.wikipedia.org/wiki/Security_Assertion_Markup_Language">http://en.wikipedia.org/wiki/Security_Assertion_Markup_Language</a>. Mainly the "SAML Use Case" section.</p>
+<p>For something at high level <a href="https://www.youtube.com/watch?v=gUmMcecHN9s">try this nifty
+video</a>. Or <a href="https://www.youtube.com/watch?v=S9BpeOmuEz4">this one for a longer
+more advanced video</a></p>
+<p>Basically when a user clicks login on your site they are redirected to an external site
+(known as the idp) which authenticates the user and sends them back to your site
+(known as the sp) where they will be logged in by your app. This process is
+nice because you can hand over the entire authentication piece to a 3rd party.
+This is very useful in internal apps for companies because as soon as a user
+gets an active directory (or whatever) login, they now have access to all of
+your internal apps.</p>
+<h3>Python Libraries</h3>
+<p>As of early 2015, the best (or at least best documented)
+python library is <a href="https://github.com/onelogin/python-saml">python-saml</a> (this walkthrough aligns with v2.1.2).
+There are others out there, <a href="http://stackoverflow.com/questions/5056475/python-library-for-implementing-saml2-based-service-provider-and-identity-provid?rq=1">this stackoverflow
+question</a>
+does a good job describing them. The reason I'm writing this is that even with
+all those projects and docs, this topic still has a very high barier of entry. Hopefully I can bring that down a bit.</p>
+<p>For this walkthrough:</p>
+<ul>
+<li>idp = identity provider = the user manager that provides authentication (LDAP/Active Directory)</li>
+<li>sp = service provider = your app</li>
+</ul>
+<h3>Setup</h3>
+<div class="highlight"><pre><span class="c">#do your virtualenv stuff...</span>
+
+<span class="c">#install</span>
+pip install flask-login
+pip install python-saml
+
+<span class="c">#generate key and cert</span>
+openssl req -x509 -nodes -days <span class="m">365</span> -newkey rsa:2048 -keyout sp.key -out sp.crt
+</pre></div>
+
+
+<p><strong>Settings</strong></p>
+<p>Fill out your settings.json and advanced_settings.json files. You'll find more info in the <a href="https://github.com/onelogin/python-saml">main documentation</a> (which you should read through anyway). Put them in a folder called 'saml', and in that folder create a folder called 'certs'. In the certs folder add the sp.key and sp.crt you just generated.</p>
+<p><strong>Metadata</strong></p>
+<p>This part is very important. You will need to generate metadata xml and send it to your IDP. This is important because the IDP needs to be able to verify your cert and also know which endpoints to hit. You can generate one specifically for localhost, and then also ones for other environments you have (dev/staging/production), and the IDP should (ideally) be able to handle them all.</p>
+<p>The metadata endpoint <em>does not</em> stay in the app. It's used only to generate a flat xml file.</p>
+<p>python-saml gives you <a href="https://github.com/onelogin/python-saml/blob/v2.1.2/demo-flask/index.py#L107">a nice template for creating metadata.</a>. But don't do it just yet, we'll do it further down.</p>
+<h3>python-saml-flask</h3>
+<p>Enter the actual code. I wanted to extract as much of the logic out of the original index.py as possible before putting anything in my views, so I rewrote all the logic into a separate extension.</p>
+<p><a href="https://github.com/cbron/python-saml-flask">Here's the extension repo</a>. Save the main file somewhere in your repo and then import it into your app (init.py/app.py):</p>
+<div class="highlight"><pre><span class="c"># setup flask-login</span>
+<span class="kn">from</span> <span class="nn">flask.ext.login</span> <span class="kn">import</span> <span class="n">LoginManager</span>
+<span class="n">login_manager</span> <span class="o">=</span> <span class="n">LoginManager</span><span class="p">()</span>
+<span class="n">login_manager</span><span class="o">.</span><span class="n">init_app</span><span class="p">(</span><span class="n">app</span><span class="p">)</span>
+<span class="n">login_manager</span><span class="o">.</span><span class="n">login_view</span> <span class="o">=</span> <span class="s">&#39;/saml/login&#39;</span>
+
+<span class="c"># setup python-saml-flask</span>
+<span class="kn">from</span> <span class="nn">common.saml</span> <span class="kn">import</span> <span class="n">SamlManager</span>
+<span class="n">saml_manager</span> <span class="o">=</span> <span class="n">SamlManager</span><span class="p">()</span>
+<span class="n">saml_manager</span><span class="o">.</span><span class="n">init_app</span><span class="p">(</span><span class="n">app</span><span class="p">)</span>
+
+<span class="c"># setup acs response handler</span>
+<span class="nd">@saml_manager.login_from_acs</span>
+<span class="k">def</span> <span class="nf">login_from_acs</span><span class="p">(</span><span class="n">acs</span><span class="p">):</span>
+  <span class="c"># define login logic here depending on idp response</span>
+  <span class="c"># must call login_user() and redirect as necessary</span>
+  <span class="k">print</span> <span class="n">acs</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s">&#39;attributes&#39;</span><span class="p">)</span>
+  <span class="k">pass</span>
+</pre></div>
+
+
+<p>That last method is important. After the user logins at the idp, it sends a POST back to your app. But whats in the POST data will depend on your idp. Therefore that method has to be coded by you. This method receives a SamlRequest object, your idp's response will be in the attributes variable. At some point this function might get too big and the logic would be better extracted to a seperate file and then called/imported here.</p>
+<p>Here's an example of what one might look like:</p>
+<div class="highlight"><pre><span class="nd">@saml_manager.login_from_acs</span>
+<span class="k">def</span> <span class="nf">acs_login</span><span class="p">(</span><span class="n">acs</span><span class="p">):</span>
+    <span class="k">if</span> <span class="n">acs</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s">&#39;errors&#39;</span><span class="p">):</span>
+        <span class="k">return</span> <span class="n">jsonify</span><span class="p">({</span><span class="s">&#39;errors&#39;</span><span class="p">:</span> <span class="n">acs</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s">&#39;errors&#39;</span><span class="p">)})</span>
+    <span class="k">elif</span> <span class="ow">not</span> <span class="n">acs</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s">&#39;logged_in&#39;</span><span class="p">):</span>
+        <span class="k">return</span> <span class="n">jsonify</span><span class="p">({</span><span class="s">&quot;error&quot;</span><span class="p">:</span> <span class="s">&#39;login failed&#39;</span><span class="p">})</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="k">for</span> <span class="n">attr</span> <span class="ow">in</span> <span class="n">acs</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s">&#39;attributes&#39;</span><span class="p">):</span>
+            <span class="k">if</span> <span class="n">attr</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">==</span> <span class="s">&#39;emailAddress&#39;</span><span class="p">:</span>
+                <span class="n">login_user</span><span class="p">(</span><span class="n">User</span><span class="o">.</span><span class="n">find_or_create</span><span class="p">(</span><span class="n">attr</span><span class="p">[</span><span class="mi">1</span><span class="p">]))</span> <span class="c">#JustInTime user creation</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">current_user</span><span class="o">.</span><span class="n">is_authenticated</span><span class="p">():</span>
+            <span class="k">return</span> <span class="p">{</span><span class="s">&#39;error&#39;</span><span class="p">:</span> <span class="s">&#39;could not find email in idp authentication response&#39;</span><span class="p">}</span>
+    <span class="k">return</span> <span class="n">redirect</span><span class="p">(</span><span class="s">&#39;/home&#39;</span><span class="p">)</span>
+</pre></div>
+
+
+<p><strong>Configs</strong></p>
+<p><code>SAML_SETTINGS_PATH</code></p>
+<div class="highlight"><pre>* STRING, Required
+* example: /your_app_path/configs/saml
+* path to a &#39;saml&#39; folder which has settings.json, advanced_settings.json and a folder named certs with all certs/keys. This is one way to handle environments: /your_app_path/configs/production/saml
+</pre></div>
+
+
+<p><code>SAML_LOGOUT_PATH</code></p>
+<div class="highlight"><pre>* STRING, Optional
+* example: /login
+* If not set, it renders &#39;saml_logout_successful.html&#39; template
+</pre></div>
+
+
+<p><strong>Testing it by generating metadata</strong></p>
+<p>Add this to a view somewhere:</p>
+<div class="highlight"><pre><span class="kn">from</span> <span class="nn">app.common.saml</span> <span class="kn">import</span> <span class="n">SamlRequest</span>
+<span class="kn">from</span> <span class="nn">flask</span> <span class="kn">import</span> <span class="n">request</span>
+<span class="nd">@app.route</span><span class="p">(</span><span class="s">&#39;/saml/metadata&#39;</span><span class="p">)</span>
+<span class="k">def</span> <span class="nf">metadata</span><span class="p">():</span>
+  <span class="n">saml</span> <span class="o">=</span> <span class="n">SamlRequest</span><span class="p">(</span><span class="n">request</span><span class="p">)</span>
+  <span class="k">return</span> <span class="n">saml</span><span class="o">.</span><span class="n">generate_metadata</span><span class="p">()</span>
+</pre></div>
+
+
+<p>If you have your <code>SAML_SETTINGS_PATH</code> set right then that view will print out a metadata xml file which you can adjust if necessary and then send it to your idp.</p>
+<p><strong>Debugging</strong></p>
+<p>You're probably going to need to debug within the actual python-saml code to figure out your errors. I found this cool snippet on /r/python to help you do that. Put this in your bashrc/zshrc:</p>
+<div class="highlight"><pre><span class="k">function</span> pycd <span class="o">()</span> <span class="o">{</span> <span class="nb">pushd</span> <span class="sb">`</span>python -c <span class="s2">&quot;import os.path, </span><span class="nv">$1</span><span class="s2">; print os.path.dirname(</span><span class="nv">$1</span><span class="s2">.__file__)&quot;</span><span class="sb">`</span><span class="p">;</span> <span class="o">}</span>
+</pre></div>
+
+
+<p>Now you can run:</p>
+<div class="highlight"><pre>pycd onelogin.saml2
+</pre></div>
+
+
+<p>And your in the virtualenv directory, from here you can add your breakpoints or <code>subl .</code></p>
+<h3>Closing</h3>
+<p>Eventually if this gets some traction it could be tweaked and published as an actual flask extension, but I think the community needs to post its experiences with other IDP's to make it really useful. I'm afraid my IDP experience alone will be too specific and the code as it stands won't be 'plug-and-play' ready for other IDP's. Please fork/comment/run-with-it if you'd like to help out. It needs a test suite :)</p></div>
+    <hr>
+    <br>
+</div>
+        </div>
+    </div>  <!-- <hr> -->
+</div> <!-- /container -->
+<br>
+<footer class="aw-footer">
+    <div class="container">
+        <div class="row">
+            <div class="col-md-12 text-center center-block aw-bottom">
+                <p>&copy; caleb bron 2018. Powered by Pelican. Theme by aboutwilson.net</p>
+            </div>
+        </div>
+    </div>
+</footer>
+<!-- JavaScript -->
+<script src="https://code.jquery.com/jquery-2.1.1.min.js"></script>
+<script src="//maxcdn.bootstrapcdn.com/bootstrap/3.2.0/js/bootstrap.min.js"></script>
+<script type="text/javascript">
+jQuery(document).ready(function($) {
+    $("div.collapseheader").click(function () {
+        $header = $(this).children("span").first();
+        $codearea = $(this).children(".input_area");
+        $codearea.slideToggle(500, function () {
+            $header.text(function () {
+                return $codearea.is(":visible") ? "Collapse Code" : "Expand Code";
+            });
+        });
+    });
+});
+</script>
+<script>
+(function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+    (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+    m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+})(window,document,'script','//www.google-analytics.com/analytics.js','ga');
+
+ga('create', 'UA-43045041-1', 'calebbron.com');
+ga('require', 'displayfeatures');
+ga('require', 'linkid', 'linkid.js');
+ga('send', 'pageview');
+
+</script>
+</body>
+</html>
